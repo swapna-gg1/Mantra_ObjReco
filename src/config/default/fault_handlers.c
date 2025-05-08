@@ -22,7 +22,7 @@
  *******************************************************************************/
 #include <stdint.h>
 #include <stdbool.h>
-
+#include <stdio.h>
 void undefined_instruction_irq_handler (void);
 void software_interrupt_irq_handler(void);
 void data_abort_irq_handler(void);
@@ -46,10 +46,25 @@ void __attribute((weak, noreturn)) software_interrupt_irq_handler(void)
 
 void __attribute((weak, noreturn)) data_abort_irq_handler(void)
 {
-    while(true)
-    {
+    uint32_t pc, sp, lr;
+    uint32_t dfsr, dfar;
+    // Inline assembly to capture SP, LR, and PC (as best as possible)
+    __asm__ volatile (
+        "mov %[sp], sp\n\t"
+        "mov %[lr], lr\n\t"
+        "mov %[pc], r15\n\t"
+        : [sp] "=r" (sp), [lr] "=r" (lr), [pc] "=r" (pc)
+    );
+    __asm__ volatile("mrc p15, 0, %0, c5, c0, 0" : "=r"(dfsr)); // Read DFSR
+    __asm__ volatile("mrc p15, 0, %0, c6, c0, 0" : "=r"(dfar)); // Read DFAR
+    printf("DATA ABORT: PC=0x%08lX SP=0x%08lX LR=0x%08lX\n", pc, sp, lr);
+    printf("DFSR=0x%08lX DFAR=0x%08lX\n", dfsr, dfar);
+    while (1);
+    
+    //while(true)
+    //{
         /* Spin forever */
-    }
+    //}
 }
 
 void __attribute((weak, noreturn)) prefetch_abort_irq_handler(void)

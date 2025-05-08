@@ -66,8 +66,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define MAX_IMAGE_BUFFER_HEADER 270054
 
 //uint8_t __attribute__ ((section(".region_nocache"), aligned (32))) bmpOrig[MAX_IMAGE_BUFFER] = { 0 };
-uint8_t bmpOrig[MAX_IMAGE_BUFFER_HEADER] = { 0 };
-uint8_t  fb0[MAX_IMAGE_BUFFER] = { 0 };
+static uint8_t bmpOrig[MAX_IMAGE_BUFFER_HEADER] = { 0 };
+static uint8_t  fb0[MAX_IMAGE_BUFFER] = { 0 };
 uint32_t width ;
 uint32_t height ;
 uint32_t testbytes_num = 400;
@@ -357,6 +357,7 @@ void APP_Tasks ( void )
             break;
         case APP_APPLY_MLMODEL_ON_IMAGE:
             printf("Applying ML Model on image\r\n");
+            run_object_detection(fb0);
             /* Indicate User that File operation has been completed */
             LED1_On(); 
             

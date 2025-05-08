@@ -219,6 +219,15 @@ void APP_Initialize ( void );
 
 void APP_Tasks( void );
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void run_object_detection(uint8_t* fb0);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _APP_H */
 /*******************************************************************************

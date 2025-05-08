@@ -2,7 +2,7 @@
 
 manifest_file_version: 1.0.0
 project: coco_ssd_MobilenetV1quant_300_300
-creation_date: 2025-05-05T11:57:56.233-07:00[America/Los_Angeles]
+creation_date: 2025-05-08T14:11:37.217-07:00[America/Los_Angeles]
 operating_system: Windows 10
 mcc_mode: IDE
 mcc_mode_version: v6.20
