@@ -34,8 +34,8 @@ SEARCH_DIR(.)
 MEMORY
 {
 	sram        (!RWX) : ORIGIN = 0x200000,   LENGTH = 128K /* sram */
-	ram         (RWX) : ORIGIN = 0x21000000, LENGTH = 0x07000000  /* ram */
-	ram_nocache  (!RWX) : ORIGIN = 0x20000000, LENGTH = 0x01000000  /* ram (non-cached) */
+	ram         (RWX) : ORIGIN = 0x20000000, LENGTH = 0x07000000  /* ram */
+	ram_nocache  (!RWX) : ORIGIN = 0x27000000, LENGTH = 0x01000000  /* ram (non-cached) */   
 	rom         (LRX) : ORIGIN = 0, LENGTH = 0
 }
 
@@ -50,7 +50,7 @@ UND_STACK_SIZE = 64;
 /* Section Definitions */
 SECTIONS
 {
-	.text 0x23f00000 :
+	.text 0x20000000 :
 	{
 		. = ALIGN(4);
 		_sfixed = .;

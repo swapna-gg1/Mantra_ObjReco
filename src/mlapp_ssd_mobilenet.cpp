@@ -14,7 +14,8 @@
 #define IMAGE_SIZE (IMAGE_WIDTH * IMAGE_HEIGHT * IMAGE_CHANNELS)
 constexpr int TENSOR_ARENA_SIZE = 300 * 1024; // trial & error
 
-alignas(16) static uint8_t tensor_arena[TENSOR_ARENA_SIZE];
+//alignas(16) static uint8_t tensor_arena[TENSOR_ARENA_SIZE];
+static uint8_t __attribute__ ((section(".region_nocache"), aligned(16))) tensor_arena[TENSOR_ARENA_SIZE] = { 0 };
 
 const char* coco_labels[92] = {
     "background", "person", "bicycle", "car", "motorcycle", "airplane", "bus",
@@ -34,13 +35,14 @@ const char* coco_labels[92] = {
 
 void run_object_detection(uint8_t* fb0) 
 {
+
     // Setup
     static tflite::MicroErrorReporter micro_error_reporter;  
     // Define a resolver with the required number of operators
     //constexpr int kOpCount = 10;
     //static tflite::MicroMutableOpResolver<kOpCount> micro_op_resolver;
     static tflite::MicroMutableOpResolver<10> micro_op_resolver;
-        
+  
     // Register only the necessary operators for SSD-MobileNet model
     micro_op_resolver.AddDepthwiseConv2D();
     micro_op_resolver.AddConv2D();   
@@ -53,8 +55,17 @@ void run_object_detection(uint8_t* fb0)
     micro_op_resolver.AddLogistic();
     micro_op_resolver.AddAdd();
 
-
+#if 0          
     const tflite::Model* model = tflite::GetModel(detect_tflite);
+   
+       
+    for (int i = 0; i < 10; ++i) {
+        printf("Model data[%d]: 0x%02X\n", i, detect_tflite[i]);
+    }
+    printf("Model version: %d\n", model->version());
+
+ /*    
+  
     if (model->version() != TFLITE_SCHEMA_VERSION) 
     {
         TF_LITE_REPORT_ERROR(&micro_error_reporter,
@@ -63,7 +74,7 @@ void run_object_detection(uint8_t* fb0)
                            model->version(), TFLITE_SCHEMA_VERSION);
         return;
     }
-    
+*/    
     static tflite::MicroInterpreter interpreter(model, micro_op_resolver, tensor_arena,
                                                 TENSOR_ARENA_SIZE, &micro_error_reporter);
     
@@ -108,5 +119,5 @@ void run_object_detection(uint8_t* fb0)
             printf("Object %d: %s (class_id=%d) score=%.2f\n", i, label, class_id, score);
         }
     }
-
+#endif
 }

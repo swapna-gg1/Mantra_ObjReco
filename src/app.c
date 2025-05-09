@@ -359,6 +359,8 @@ void APP_Tasks ( void )
             printf("Applying ML Model on image\r\n");
             run_object_detection(fb0);
             /* Indicate User that File operation has been completed */
+            
+            printf("Done\r\n");
             LED1_On(); 
             
             appData.state = APP_STATE_IDLE;
